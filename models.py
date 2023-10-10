@@ -23,7 +23,7 @@ class User(db.Model):
 
     username = db.Column(db.String(20), primary_key=True)
 
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(72), nullable=False)
 
     email = db.Column(db.String(50), nullable=False)
 

@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, redirect, session, render_template, flash
 from forms import RegisterForm, LoginForm, CSRFProtectForm
+from werkzeug.exceptions import Unauthorized
 
 from models import connect_db, db, User
 
@@ -16,17 +17,20 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
 connect_db(app)
 db.create_all()
 
+USERNAME = "username"
 
+#TODO: Change redirect_to_register to homepage
 @app.get("/")
 def redirect_to_register():
     """Redirect to register page"""
 
     return redirect("/register")
 
-
+#TODO: for register + login, if logged in redirect to their own page, make this tops
+#Redirect with session[USERNAME]
 @app.route("/register", methods=["GET", "POST"])
 def register_user():
-    """Register a user to db, re render form on invalid input
+    """Register a user to db, re-render form on invalid input
     If valid input, redirect to user profile page
     """
 
@@ -40,14 +44,14 @@ def register_user():
         db.session.add(new_user)
         db.session.commit()
 
-        session["username"] = new_user.username
+        session[USERNAME] = new_user.username
 
         return redirect(f"/users/{new_user.username}")
 
     else:
         return render_template("user_register_form.html", form=form)
 
-
+#TODO: Make URL for in the redirects 
 @app.route("/login", methods=["GET", "POST"])
 def login_user():
     """Show/process login form.
@@ -62,7 +66,7 @@ def login_user():
         user = User.authenticate(**data)
 
         if user:
-            session["username"] = user.username
+            session[USERNAME] = user.username
             return redirect(f"/users/{user.username}")
         else:
             form.username.errors = ["Bad name/password"]
@@ -73,13 +77,14 @@ def login_user():
 @app.get("/users/<username>")
 def user_profile(username):
     """Show user profile"""
-    form = CSRFProtectForm()
 
-    if "username" not in session:
-        flash("You must be logged in :(")
-        return redirect("/login")
+    if USERNAME not in session or session[USERNAME] != username:
+        raise Unauthorized()
+        # flash("You don't have access :(")
+        # return redirect("/login")
 
     user = User.query.get_or_404(username)
+    form = CSRFProtectForm()
 
     return render_template("user_profile.html", user=user, form=form)
 
@@ -91,6 +96,8 @@ def user_logout():
     form = CSRFProtectForm()
 
     if form.validate_on_submit():
-        session.pop("username", None)
+        session.pop(USERNAME, None)
+    else:
+        raise Unauthorized()
 
     return redirect("/")
