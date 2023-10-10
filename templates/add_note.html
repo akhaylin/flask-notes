@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %} Add Note {% endblock %}
+{% block content %}
+<form id="add-note" action="{{ url_for('add_notes', username= session['username']) }}" method="POST">
+  {{ form.hidden_tag() }} <!--add type=hidden form fields -->
+
+  {% for field in form
+         if field.widget.input_type != 'hidden' %}
+
+    <p>
+      {{ field.label }}
+      {{ field }}
+
+      {% for error in field.errors %}
+        {{ error }}
+      {% endfor %}
+    </p>
+
+  {% endfor %}
+
+  <button class="btn btn-primary mt-3" type="submit">Add Note</button>
+</form>
+{% endblock %}

@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, redirect, session, render_template, flash, url_for
-from forms import RegisterForm, LoginForm, CSRFProtectForm
+from forms import RegisterForm, LoginForm, CSRFProtectForm, NoteForm
 from werkzeug.exceptions import Unauthorized
 
 from models import connect_db, db, User, Note
@@ -142,7 +142,7 @@ def add_notes(username):
     if form.validate_on_submit():
         data = {k: v for k, v in form.data.items() if k != "csrf_token"}
 
-        new_note = Note.add(**data)
+        new_note = Note.add_note(**data, owner_username=username)
 
         db.session.add(new_note)
         db.session.commit()

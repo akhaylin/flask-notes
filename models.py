@@ -85,4 +85,16 @@ class Note(db.Model):
         nullable=False
     )
 
+    @classmethod
+    def add_note(cls, title, content, owner_username):
+        """Register user with:
+        username, hashed password, email, first_name, last_name"""
+
+
+        return cls(
+            title=title,
+            content=content,
+            owner_username=owner_username
+        )
+
 
