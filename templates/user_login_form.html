@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} User Registration {% endblock %}
+{% block title %} User Login {% endblock %}
 {% block content %}
 <form id="user-login" action="{{ url_for('login_user') }}" method="POST">
   {{ form.hidden_tag() }} <!--add type=hidden form fields -->

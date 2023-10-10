@@ -9,10 +9,10 @@ class RegisterForm(FlaskForm):
         "Username",
         validators=[InputRequired(), Length(max=20)]
     )
-#TODO: put min password length
+
     password = PasswordField(
         "Password",
-        validators=[InputRequired(), Length(max=72)]
+        validators=[InputRequired(), Length(min=5, max=72)]
     )
 
     email = StringField(

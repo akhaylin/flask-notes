@@ -12,5 +12,14 @@
   <button type="submit" class="btn btn-primary">Logout</button>
 </form>
 
+<ul>
+  {% for note in user.notes %}
+  <li>
+    <button formaction="" class="bi bi-trash"></button>
+    <button formaction="" class="bi bi-pencil-square"></button>
+    <b>{{ note.title }}</b> {{ note.content }}
+  </li>
+</ul>
+<!--TODO: FILL IN FORMACTION ROUTES-->
 
 {% endblock %}
