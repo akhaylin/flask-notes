@@ -7,19 +7,27 @@
 <h1>{{ user.first_name }} {{ user.last_name }}</h1>
 <p>Email: {{ user.email }}</p>
 
-<form action="/logout" method="POST">
+
+<form method="POST">
   {{form.hidden_tag()}}
-  <button type="submit" class="btn btn-primary">Logout</button>
+  <button formaction="/logout" type="submit" class="btn btn-primary">Logout</button>
+  <button formaction="/delete" type="submit" class="btn btn-primary">Delete User</button>
+  <button formaction="/add_note" type="submit" class="btn btn-primary">Add Note</button>
 </form>
 
 <ul>
   {% for note in user.notes %}
   <li>
-    <button formaction="" class="bi bi-trash"></button>
-    <button formaction="" class="bi bi-pencil-square"></button>
-    <b>{{ note.title }}</b> {{ note.content }}
+    <form>
+      <button formaction="" class="bi bi-trash"></button>
+      <button formaction="" class="bi bi-pencil-square"></button>
+      <b>{{ note.title }}</b> {{ note.content }}
+    </form>
+
   </li>
+
+  {% endfor %}
 </ul>
-<!--TODO: FILL IN FORMACTION ROUTES-->
+<!--TODO: FILL IN FORMACTION ROUTES AND DO URL FOR FOR DELETE AND LOGOUT-->
 
 {% endblock %}

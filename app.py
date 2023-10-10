@@ -4,7 +4,7 @@ from flask import Flask, redirect, session, render_template, flash, url_for
 from forms import RegisterForm, LoginForm, CSRFProtectForm
 from werkzeug.exceptions import Unauthorized
 
-from models import connect_db, db, User
+from models import connect_db, db, User, Note
 
 app = Flask(__name__)
 
@@ -103,4 +103,55 @@ def user_logout():
         raise Unauthorized()
 
     return redirect(url_for('homepage'))
+
+
+@app.post('/users/<username>/delete')
+def delete_user(username):
+    '''Deletes user and all their posts'''
+
+    form = CSRFProtectForm()
+
+    if form.validate_on_submit():
+        user = User.query.get_or_404(username)
+        notes = Note.query.filter(Note.username == username).all()
+
+        for note in notes:
+            db.session.delete(note)
+            session.pop(USERNAME, None)
+
+        db.session.delete(user)
+        db.session.commit()
+        flash(f"User {username} deleted.")
+
+    else:
+        raise Unauthorized()
+
+    return redirect(url_for('homepage'))
+
+
+@app.route("/users/<username>/notes/add", methods=["GET", "POST"])
+def add_notes(username):
+    """shows add notes to form and processes input to add to db
+    """
+    if USERNAME not in session or session[USERNAME] != username:
+
+        return redirect(url_for('homepage'))
+
+    form = NoteForm()
+
+    if form.validate_on_submit():
+        data = {k: v for k, v in form.data.items() if k != "csrf_token"}
+
+        new_note = Note.add(**data)
+
+        db.session.add(new_note)
+        db.session.commit()
+
+        return redirect(url_for('user_profile', username=session[USERNAME]))
+
+    else:
+        return render_template("add_note.html", form=form)
+
+
+
 

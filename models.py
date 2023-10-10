@@ -62,7 +62,7 @@ class User(db.Model):
 class Note(db.Model):
     """Class for notes"""
 
-    __tablename__ = 'tables'
+    __tablename__ = 'notes'
 
     id = db.Column(
         db.Integer,
