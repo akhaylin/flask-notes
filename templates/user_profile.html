@@ -11,16 +11,20 @@
 <form method="POST">
   {{form.hidden_tag()}}
   <button formaction="{{ url_for('user_logout')}}" type="submit" class="btn btn-primary">Logout</button>
-  <button formaction="{{ url_for('delete_user',username= user.username)}}" type="submit" class="btn btn-primary">Delete User</button>
-  <button formaction="{{ url_for('add_notes',username= user.username)}}" type="submit" class="btn btn-primary">Add Note</button>
+  <button formaction="{{ url_for('delete_user',username= user.username)}}"
+          type="submit"
+          class="btn btn-primary">Delete User</button>
+  <button formaction="{{ url_for('add_note',username= user.username)}}" type="submit" class="btn btn-primary">Add
+    Note</button>
 </form>
 
 <ul>
   {% for note in user.notes %}
   <li>
-    <form>
-      <button formaction="" class="bi bi-trash"></button>
-      <button formaction="" class="bi bi-pencil-square"></button>
+    <form method="POST">
+      {{form.hidden_tag()}}
+      <button formaction="{{url_for('delete_note', note_id=note.id)}}" class="bi bi-trash"></button>
+      <button formaction="{{url_for('edit_note', note_id=note.id)}}" class="bi bi-pencil-square"></button>
       <b>{{ note.title }}</b> {{ note.content }}
     </form>
 
@@ -28,6 +32,4 @@
 
   {% endfor %}
 </ul>
-<!--TODO: FILL IN FORMACTION ROUTES AND DO URL FOR FOR DELETE AND LOGOUT-->
-
 {% endblock %}

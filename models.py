@@ -21,15 +21,25 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    username = db.Column(db.String(20), primary_key=True)
+    username = db.Column(
+        db.String(20),
+        primary_key=True)
 
-    password = db.Column(db.String(72), nullable=False)
+    password = db.Column(
+        db.String(72),
+        nullable=False)
 
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(
+        db.String(50),
+        nullable=False)
 
-    first_name = db.Column(db.String(30), nullable=False)
+    first_name = db.Column(
+        db.String(30),
+        nullable=False)
 
-    last_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(
+        db.String(30),
+        nullable=False)
 
     notes = db.relationship('Note', backref='user')
 
@@ -96,5 +106,12 @@ class Note(db.Model):
             content=content,
             owner_username=owner_username
         )
+
+    def edit_note(self, title, content):
+        """edits note title and content"""
+
+        self.title = title
+        self.content = content
+
 
 
