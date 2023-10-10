@@ -7,24 +7,27 @@ from models import connect_db, db, User
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "secret"
+app.config["SECRET_KEY"] = "secret"
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    "DATABASE_URL", "postgresql:///notes")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URL", "postgresql:///notes"
+)
 
 connect_db(app)
 db.create_all()
 
-@app.get('/')
+
+@app.get("/")
 def redirect_to_register():
     """Redirect to register page"""
 
-    return redirect('/register')
+    return redirect("/register")
 
-@app.route('/register', methods=["GET","POST"])
+
+@app.route("/register", methods=["GET", "POST"])
 def register_user():
     """Register a user to db, re render form on invalid input
-        If valid input, redirect to user profile page
+    If valid input, redirect to user profile page
     """
 
     form = RegisterForm()
@@ -44,11 +47,12 @@ def register_user():
     else:
         return render_template("user_register_form.html", form=form)
 
-@app.route('/login', methods=["GET", "POST"])
+
+@app.route("/login", methods=["GET", "POST"])
 def login_user():
-    '''Show/process login form.
-        Ensures user authentication and then directs to user's profile
-    '''
+    """Show/process login form.
+    Ensures user authentication and then directs to user's profile
+    """
 
     form = LoginForm()
 
@@ -66,23 +70,23 @@ def login_user():
     return render_template("user_login_form.html", form=form)
 
 
-@app.get('/users/<username>')
+@app.get("/users/<username>")
 def user_profile(username):
     """Show user profile"""
     form = CSRFProtectForm()
 
     if "username" not in session:
-        flash("You must be logged in :()")
-        return redirect('/login')
+        flash("You must be logged in :(")
+        return redirect("/login")
 
     user = User.query.get_or_404(username)
 
     return render_template("user_profile.html", user=user, form=form)
 
 
-@app.post('/logout')
+@app.post("/logout")
 def user_logout():
-    """Logout user """
+    """Logout user"""
 
     form = CSRFProtectForm()
 
